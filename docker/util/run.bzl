@@ -382,10 +382,10 @@ def _commit_layer_impl(
 
     runfiles = [image, image_utils, env_file]
 
-    ctx.actions.run(
+    ctx.actions.run_shell(
         outputs = [output_layer_tar, output_diff_id],
         inputs = runfiles,
-        executable = script,
+        command = "bash -e " + script.path,
         execution_requirements = {
             # This action produces large output files, and isn't economical to
             # upload to a remote cache.
