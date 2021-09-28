@@ -219,10 +219,10 @@ def _commit_impl(
 
     runfiles = [image, image_utils]
 
-    ctx.actions.run(
+    ctx.actions.run_shell(
         outputs = [output_image_tar],
         inputs = runfiles,
-        executable = script,
+        command = "bash -e " + script.path,
         tools = [ctx.executable._extract_image_id, ctx.executable._to_json_tool],
         use_default_shell_env = True,
     )
@@ -382,10 +382,10 @@ def _commit_layer_impl(
 
     runfiles = [image, image_utils, env_file]
 
-    ctx.actions.run(
+    ctx.actions.run_shell(
         outputs = [output_layer_tar, output_diff_id],
         inputs = runfiles,
-        executable = script,
+        command = "bash -e " + script.path,
         execution_requirements = {
             # This action produces large output files, and isn't economical to
             # upload to a remote cache.
@@ -479,4 +479,4 @@ commit_layer = struct(
 
 def _process_commands(command_list):
     # Use the $ to allow escape characters in string
-    return 'sh -c $\"{0}\"'.format(" && ".join(command_list))
+    return 'cmd $\"{0}\"'.format(" && ".join(command_list))
